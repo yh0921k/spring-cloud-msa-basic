@@ -1,20 +1,27 @@
 package msa.userservice.service;
 
-import lombok.RequiredArgsConstructor;
 import msa.userservice.domain.UserEntity;
 import msa.userservice.domain.UserRepository;
 import msa.userservice.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
+  private final BCryptPasswordEncoder passwordEncoder;
+
+  @Autowired
+  public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+  }
 
   @Override
   public UserDto createUser(UserDto userDto) {
@@ -23,7 +30,8 @@ public class UserServiceImpl implements UserService {
     ModelMapper mapper = new ModelMapper();
     mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     UserEntity userEntity = mapper.map(userDto, UserEntity.class);
-    userEntity.setEncryptedPassword("encrypted password");
+
+    userEntity.setEncryptedPassword(passwordEncoder.encode(userDto.getPassword()));
 
     userRepository.save(userEntity);
 
