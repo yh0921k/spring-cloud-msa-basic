@@ -28,18 +28,19 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping("/health_check")
+  @GetMapping("/user-service/health_check")
   public String status() {
-    return "It's Working in User Service";
+    return String.format(
+        "It's Working in User Service on PORT %s", environment.getProperty("local.server.port"));
   }
 
-  @GetMapping("/welcome")
+  @GetMapping("/user-service/welcome")
   public String welcome() {
     // return environment.getProperty("greeting.message");
     return greeting.getMessage();
   }
 
-  @PostMapping("/users")
+  @PostMapping("/user-service/users")
   public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser user) {
 
     ModelMapper mapper = new ModelMapper();
