@@ -1,5 +1,6 @@
 package msa.userservice.controller;
 
+import msa.userservice.domain.UserEntity;
 import msa.userservice.dto.UserDto;
 import msa.userservice.service.UserService;
 import msa.userservice.vo.Greeting;
@@ -13,8 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
-@RequestMapping("/")
+@RequestMapping("/user-service")
 public class UserController {
 
   private final Environment environment;
@@ -28,19 +32,19 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping("/user-service/health_check")
+  @GetMapping("/health_check")
   public String status() {
     return String.format(
         "It's Working in User Service on PORT %s", environment.getProperty("local.server.port"));
   }
 
-  @GetMapping("/user-service/welcome")
+  @GetMapping("/welcome")
   public String welcome() {
     // return environment.getProperty("greeting.message");
     return greeting.getMessage();
   }
 
-  @PostMapping("/user-service/users")
+  @PostMapping("/users")
   public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser user) {
 
     ModelMapper mapper = new ModelMapper();
@@ -50,5 +54,26 @@ public class UserController {
 
     ResponseUser responseUser = mapper.map(userDto, ResponseUser.class);
     return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
+  }
+
+  @GetMapping("/users")
+  public ResponseEntity<List<ResponseUser>> getUsers() {
+    Iterable<UserEntity> users = userService.getUserByAll();
+
+    List<ResponseUser> result = new ArrayList<>();
+    users.forEach(
+        v -> {
+          result.add(new ModelMapper().map(v, ResponseUser.class));
+        });
+
+    return ResponseEntity.ok().body(result);
+  }
+
+  @GetMapping("/users/{userId}")
+  public ResponseEntity<ResponseUser> getUser(@PathVariable("userId") String userId) {
+    UserDto userDto = userService.getUserByUserId(userId);
+
+    ResponseUser returnValue = new ModelMapper().map(userDto, ResponseUser.class);
+    return ResponseEntity.ok().body(returnValue);
   }
 }
