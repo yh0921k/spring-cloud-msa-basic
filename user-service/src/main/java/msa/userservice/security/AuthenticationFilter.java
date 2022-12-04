@@ -2,7 +2,12 @@ package msa.userservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import msa.userservice.dto.UserDto;
+import msa.userservice.service.UserService;
 import msa.userservice.vo.RequestLogin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +23,18 @@ import java.util.ArrayList;
 
 @Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+  private final UserService userService;
+  private final Environment environment;
+
+  @Autowired
+  public AuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, Environment environment) {
+    super(authenticationManager);
+    this.userService = userService;
+    this.environment = environment;
+  }
+
+
 
   @Override
   public Authentication attemptAuthentication(
@@ -50,6 +67,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     // super.successfulAuthentication(request, response, chain, authResult);
     // 추후 로그인 성공시 작업을 서술할 수 있음(토큰 생성, 로그인시 반환값 설정 등)
 
-    log.debug(((User)authResult.getPrincipal()).getUsername());
+    String username = ((User)authResult.getPrincipal()).getUsername();
+    UserDto userDetails = userService.getUserDetailsByEmail(username);
   }
 }

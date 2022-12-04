@@ -34,7 +34,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     // 모든 경로에 대해 아이피가 제한되며, 필터를 통과한 데이터에 대해서만 권한 부여 및 작업 가능
     http.authorizeRequests()
-        .antMatchers("/error/**").permitAll()
+        .antMatchers("/error/**")
+        .permitAll()
         .antMatchers("/**")
         .access(
             "hasIpAddress('127.0.0.1') or hasIpAddress('192.168.60.103/24') or hasIpAddress('0:0:0:0:0:0:0:1')")
@@ -45,8 +46,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
   }
 
   private AuthenticationFilter getAuthenticationFilter() throws Exception {
-    AuthenticationFilter authenticationFilter = new AuthenticationFilter();
-    authenticationFilter.setAuthenticationManager(authenticationManager());
+    AuthenticationFilter authenticationFilter =
+        new AuthenticationFilter(authenticationManager(), userService, environment);
+    // authenticationFilter.setAuthenticationManager(authenticationManager());
 
     return authenticationFilter;
   }
