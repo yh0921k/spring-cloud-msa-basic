@@ -1,6 +1,8 @@
 package msa.userservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import msa.userservice.dto.UserDto;
 import msa.userservice.service.UserService;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -28,13 +31,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
   private final Environment environment;
 
   @Autowired
-  public AuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, Environment environment) {
+  public AuthenticationFilter(
+      AuthenticationManager authenticationManager,
+      UserService userService,
+      Environment environment) {
     super(authenticationManager);
     this.userService = userService;
     this.environment = environment;
   }
-
-
 
   @Override
   public Authentication attemptAuthentication(
@@ -67,7 +71,20 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     // super.successfulAuthentication(request, response, chain, authResult);
     // 추후 로그인 성공시 작업을 서술할 수 있음(토큰 생성, 로그인시 반환값 설정 등)
 
-    String username = ((User)authResult.getPrincipal()).getUsername();
+    String username = ((User) authResult.getPrincipal()).getUsername();
     UserDto userDetails = userService.getUserDetailsByEmail(username);
+
+    String token =
+        Jwts.builder()
+            .setSubject(userDetails.getUserId())
+            .setExpiration(
+                new Date(
+                    System.currentTimeMillis()
+                        + Long.parseLong(environment.getProperty("token.expiration_time"))))
+            .signWith(SignatureAlgorithm.HS512, environment.getProperty("token.secret"))
+            .compact();
+
+    response.addHeader("token", token);
+    response.addHeader("userId", userDetails.getUserId());
   }
 }
