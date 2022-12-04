@@ -47,6 +47,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
@@ -77,3 +78,5 @@ spring:
                 preLogger: true
                 postLogger: true
 
+token:
+  secret: user_token
