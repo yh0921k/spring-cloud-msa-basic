@@ -8,4 +8,6 @@ spring:
     config:
       server:
         git:
-          uri: file:///Users/kyh/project/temp/local-config
+          uri: https://github.com/yh0921k/spring-cloud-msa-basic
+          search-paths: config
+#          uri: file:///Users/kyh/project/temp/local-config
