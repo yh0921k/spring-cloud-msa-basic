@@ -32,6 +32,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     http.csrf().disable();
     // http.authorizeRequests().antMatchers("/users/**").permitAll();
 
+    // Spring Actuator 관련 기능에 대해서는 모든 요청에 대해 인증 없이 통과
+    http.authorizeRequests().antMatchers("/actuator/**").permitAll();
+
     // 모든 경로에 대해 아이피가 제한되며, 필터를 통과한 데이터에 대해서만 권한 부여 및 작업 가능
     http.authorizeRequests()
         .antMatchers("/error/**")
