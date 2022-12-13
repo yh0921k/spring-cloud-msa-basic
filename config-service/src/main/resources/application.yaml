@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: config-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: admin
+    password: admin
 #  profiles:
 #    active: native
   cloud:
@@ -15,3 +20,8 @@ spring:
           uri: https://github.com/yh0921k/spring-cloud-msa-basic
           search-paths: config
 #          uri: file:///Users/kyh/project/temp/local-config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
