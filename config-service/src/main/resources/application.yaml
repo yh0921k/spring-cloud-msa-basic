@@ -19,6 +19,7 @@ spring:
         git:
           uri: https://github.com/yh0921k/spring-cloud-msa-basic
           search-paths: config
+          default-label: master
 #          uri: file:///Users/kyh/project/temp/local-config
 management:
   endpoints:
