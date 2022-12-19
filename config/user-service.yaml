@@ -7,7 +7,10 @@ spring:
 
 token:
   expiration_time: 86400000
-  secret: my_token_user-service
+  secret: my_token_default
 
 gateway:
   ip: 192.168.60.103
+
+order_service:
+  url: http://127.0.0.1:8000/order-service/%s/orders
