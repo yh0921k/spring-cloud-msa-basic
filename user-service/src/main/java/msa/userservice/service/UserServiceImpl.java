@@ -1,5 +1,6 @@
 package msa.userservice.service;
 
+import msa.userservice.client.OrderServiceClient;
 import msa.userservice.domain.UserEntity;
 import msa.userservice.domain.UserRepository;
 import msa.userservice.dto.UserDto;
@@ -7,10 +8,7 @@ import msa.userservice.vo.ResponseOrder;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +27,7 @@ public class UserServiceImpl implements UserService {
   private final BCryptPasswordEncoder passwordEncoder;
 
   private final Environment environment;
+  private final OrderServiceClient orderServiceClient;
   private final RestTemplate restTemplate;
 
   @Autowired
@@ -36,11 +35,13 @@ public class UserServiceImpl implements UserService {
       UserRepository userRepository,
       BCryptPasswordEncoder passwordEncoder,
       Environment environment,
-      RestTemplate restTemplate) {
+      RestTemplate restTemplate,
+      OrderServiceClient orderServiceClient) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.environment = environment;
     this.restTemplate = restTemplate;
+    this.orderServiceClient = orderServiceClient;
   }
 
   @Override
@@ -85,15 +86,17 @@ public class UserServiceImpl implements UserService {
     UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
     //    List<ResponseOrder> orders = new ArrayList<>();
 
-    String orderUrl = String.format(environment.getProperty("order_service.url"), userId);
-    ResponseEntity<List<ResponseOrder>> orderListResponse =
-        restTemplate.exchange(
-            orderUrl,
-            HttpMethod.GET,
-            null,
-            new ParameterizedTypeReference<List<ResponseOrder>>() {});
+    //    String orderUrl = String.format(environment.getProperty("order_service.url"), userId);
+    //    ResponseEntity<List<ResponseOrder>> orderListResponse =
+    //        restTemplate.exchange(
+    //            orderUrl,
+    //            HttpMethod.GET,
+    //            null,
+    //            new ParameterizedTypeReference<List<ResponseOrder>>() {});
+    //
+    //    List<ResponseOrder> ordersList = orderListResponse.getBody();
 
-    List<ResponseOrder> ordersList = orderListResponse.getBody();
+    List<ResponseOrder> ordersList = orderServiceClient.getOrders(userId);
     userDto.setOrders(ordersList);
 
     return userDto;
