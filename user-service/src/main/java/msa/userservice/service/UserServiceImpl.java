@@ -1,6 +1,5 @@
 package msa.userservice.service;
 
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import msa.userservice.client.OrderServiceClient;
 import msa.userservice.domain.UserEntity;
@@ -99,12 +98,13 @@ public class UserServiceImpl implements UserService {
     //
     //    List<ResponseOrder> ordersList = orderListResponse.getBody();
 
-    List<ResponseOrder> ordersList = null;
-    try {
-      ordersList = orderServiceClient.getOrders(userId);
-    } catch (FeignException exception) {
-      log.error(exception.getMessage());
-    }
+    //    List<ResponseOrder> ordersList = null;
+    //    try {
+    //      ordersList = orderServiceClient.getOrders(userId);
+    //    } catch (FeignException exception) {
+    //      log.error(exception.getMessage());
+    //    }
+    List<ResponseOrder> ordersList = orderServiceClient.getOrders(userId);
     userDto.setOrders(ordersList);
 
     return userDto;
