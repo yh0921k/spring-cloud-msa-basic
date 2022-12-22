@@ -42,7 +42,7 @@ greeting:
 
 logging:
   level:
-    msa.userservice: debug
+    msa.userservice.client: DEBUG
 
 management:
   endpoints:
