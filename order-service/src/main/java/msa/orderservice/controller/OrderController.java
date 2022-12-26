@@ -2,6 +2,7 @@ package msa.orderservice.controller;
 
 import msa.orderservice.domain.OrderEntity;
 import msa.orderservice.dto.OrderDto;
+import msa.orderservice.messagequeue.KafkaProducer;
 import msa.orderservice.service.OrderService;
 import msa.orderservice.vo.RequestOrder;
 import msa.orderservice.vo.ResponseOrder;
@@ -22,11 +23,14 @@ public class OrderController {
 
   private final Environment environment;
   private final OrderService orderService;
+  private final KafkaProducer kafkaProducer;
 
   @Autowired
-  public OrderController(Environment environment, OrderService orderService) {
+  public OrderController(
+      Environment environment, OrderService orderService, KafkaProducer kafkaProducer) {
     this.environment = environment;
     this.orderService = orderService;
+    this.kafkaProducer = kafkaProducer;
   }
 
   @GetMapping("/health_check")
@@ -41,11 +45,17 @@ public class OrderController {
 
     ModelMapper mapper = new ModelMapper();
     mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+    // JPA
     OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
     orderDto.setUserId(userId);
     OrderDto createdOrder = orderService.createOrder(orderDto);
 
     ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+
+    // send this order to the kafka
+    kafkaProducer.send("example-catalog-topic", orderDto);
+
     return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
   }
 
