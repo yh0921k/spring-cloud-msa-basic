@@ -9,6 +9,8 @@ import msa.userservice.vo.ResponseOrder;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,18 +34,22 @@ public class UserServiceImpl implements UserService {
   private final OrderServiceClient orderServiceClient;
   private final RestTemplate restTemplate;
 
+  private final CircuitBreakerFactory circuitBreakerFactory;
+
   @Autowired
   public UserServiceImpl(
       UserRepository userRepository,
       BCryptPasswordEncoder passwordEncoder,
       Environment environment,
       RestTemplate restTemplate,
-      OrderServiceClient orderServiceClient) {
+      OrderServiceClient orderServiceClient,
+      CircuitBreakerFactory circuitBreakerFactory) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.environment = environment;
     this.restTemplate = restTemplate;
     this.orderServiceClient = orderServiceClient;
+    this.circuitBreakerFactory = circuitBreakerFactory;
   }
 
   @Override
@@ -104,7 +110,12 @@ public class UserServiceImpl implements UserService {
     //    } catch (FeignException exception) {
     //      log.error(exception.getMessage());
     //    }
-    List<ResponseOrder> ordersList = orderServiceClient.getOrders(userId);
+
+    //    List<ResponseOrder> ordersList = orderServiceClient.getOrders(userId);
+    CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+    List<ResponseOrder> ordersList =
+        circuitBreaker.run(
+            () -> orderServiceClient.getOrders(userId), throwable -> new ArrayList<>());
     userDto.setOrders(ordersList);
 
     return userDto;
