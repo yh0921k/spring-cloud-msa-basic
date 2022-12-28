@@ -1,5 +1,6 @@
 package msa.orderservice.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import msa.orderservice.domain.OrderEntity;
 import msa.orderservice.dto.OrderDto;
 import msa.orderservice.messagequeue.KafkaProducer;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/order-service")
+@Slf4j
 public class OrderController {
 
   private final Environment environment;
@@ -50,6 +52,8 @@ public class OrderController {
   public ResponseEntity<ResponseOrder> createOrder(
       @PathVariable("userId") String userId, @RequestBody RequestOrder orderDetails) {
 
+    log.info("Before add orders data");
+
     ModelMapper mapper = new ModelMapper();
     mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -69,18 +73,22 @@ public class OrderController {
     orderProducer.send("orders", orderDto);
 
     ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
+
+    log.info("Before added orders data");
+
     return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
   }
 
   @GetMapping("/{userId}/orders")
   public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable("userId") String userId) {
-
+    log.info("Before retrieve orders data");
     Iterable<OrderEntity> orderList = orderService.getOrdersByUserId(userId);
     List<ResponseOrder> result = new ArrayList<>();
     orderList.forEach(
         orderEntity -> {
           result.add(new ModelMapper().map(orderEntity, ResponseOrder.class));
         });
+    log.info("After retrieved orders data");
 
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
