@@ -1,5 +1,6 @@
 package msa.userservice.controller;
 
+import io.micrometer.core.annotation.Timed;
 import msa.userservice.domain.UserEntity;
 import msa.userservice.dto.UserDto;
 import msa.userservice.service.UserService;
@@ -33,6 +34,7 @@ public class UserController {
   }
 
   @GetMapping("/health_check")
+  @Timed(value = "users.status", longTask = true)
   public String status() {
     return String.format(
         "It's Working in User Service"
@@ -47,6 +49,7 @@ public class UserController {
   }
 
   @GetMapping("/welcome")
+  @Timed(value = "users.welcome", longTask = true)
   public String welcome() {
     // return environment.getProperty("greeting.message");
     return greeting.getMessage();
