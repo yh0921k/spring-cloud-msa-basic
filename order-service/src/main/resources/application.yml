@@ -35,3 +35,8 @@ eureka:
 logging:
   level:
     msa.orderservice: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, httptrace, info, metrics, prometheus
