@@ -7,19 +7,21 @@ spring:
   rabbitmq:
     host: 127.0.0.1
     port: 5672
-    username: admin
-    password: admin
+    username: guest
+    password: guest
   profiles:
     active: native
   cloud:
     config:
       server:
-        native:
-          search-locations: file://${user.home}/project/kyh/msa-basic/config
-#        git:
-#          uri: https://github.com/yh0921k/spring-cloud-msa-basic
-#          search-paths: config
-#          default-label: master
+#        native:
+#          search-locations: file://${user.home}/project/kyh/msa-basic/config
+        git:
+          uri: https://github.com/yh0921k/spring-cloud-msa-basic
+          search-paths: config
+          default-label: master
+#          username:
+#          password:
 #          uri: file:///Users/kyh/project/temp/local-config
 management:
   endpoints:

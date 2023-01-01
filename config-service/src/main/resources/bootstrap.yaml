@@ -1,6 +1,7 @@
 encrypt:
 #  key: symmetric-key
   key-store:
-    location: file://${user.home}/project/kyh/msa-basic/keystore/apiEncryptionKey.jks
+#    location: file://${user.home}/project/kyh/msa-basic/keystore/apiEncryptionKey.jks
+    location: file:/apiEncryptionKey.jks
     password: test1234
     alias: apiEncryptionKey
