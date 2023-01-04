@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/maven
 # Edit at https://www.toptal.com/developers/gitignore?templates=maven
 
+### Database ###
+docker-files/mariadb/db/**
+
 ### Maven ###
 target/
 pom.xml.tag
