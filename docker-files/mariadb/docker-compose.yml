@@ -13,8 +13,10 @@ services:
     environment:
       TZ: Asia/Seoul
     networks:
-      - backend
+      - ecommerce-network
     restart: always
 
 networks:
-  backend:
+  default:
+    external:
+      name: ecommerce-network
