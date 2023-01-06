@@ -1,4 +1,4 @@
 FROM openjdk:17-ea-11-jdk-slim
 VOLUME /tmp
-COPY ./user-service-0.0.1-SNAPSHOT.jar UserService.jar
+COPY ./user-service-1.0.jar UserService.jar
 ENTRYPOINT [ "java", "-jar", "UserService.jar" ]
