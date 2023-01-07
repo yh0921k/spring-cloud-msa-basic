@@ -44,6 +44,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.7'
 }
 
 dependencyManagement {

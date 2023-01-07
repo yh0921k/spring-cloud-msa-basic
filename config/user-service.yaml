@@ -1,10 +1,14 @@
 spring:
+  #  datasource:
+  #    driver-class-name: org.h2.Driver
+  #    url: jdbc:h2:tcp://localhost/~/project/h2/test
+  #    username: sa
+  #    password: "{cipher}AQBi5hEiXhyEHQMoXtpOVkLQ0XaHQPwCDGblGSo8Fa7CAbfAtChfAd6GoQ4si4w67EkC9L+vKtExQhLTWPfA2X3q8dSG8zvz1527Ygddc0GFlRleB8VCLKgT3ctErDDDIAJ0uVl2NksoPSq66QLC42QlsP04ZnKLFgC4YmfEkpIteG9q1oD/lDIekVmZgof9VfnMJR/jqbwq7m5DXsB25CTPkb2txZKM/BzMQq389q+sGfTZP+9E3/Est72XX0Xfy0KNCHkmyxsPryusv0pGzMfmSmJ/gPJOFTUvw4j/Cz3tFU8SozDcmDw/t4aKOnum+A5kpwGpNeDh6UfCPMgXrrdedA2P15K216xNj/9uLbND4fT8S0rroKLYN9Xm7Ogc428="
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/project/h2/test
-    username: sa
-    password: "{cipher}AQBi5hEiXhyEHQMoXtpOVkLQ0XaHQPwCDGblGSo8Fa7CAbfAtChfAd6GoQ4si4w67EkC9L+vKtExQhLTWPfA2X3q8dSG8zvz1527Ygddc0GFlRleB8VCLKgT3ctErDDDIAJ0uVl2NksoPSq66QLC42QlsP04ZnKLFgC4YmfEkpIteG9q1oD/lDIekVmZgof9VfnMJR/jqbwq7m5DXsB25CTPkb2txZKM/BzMQq389q+sGfTZP+9E3/Est72XX0Xfy0KNCHkmyxsPryusv0pGzMfmSmJ/gPJOFTUvw4j/Cz3tFU8SozDcmDw/t4aKOnum+A5kpwGpNeDh6UfCPMgXrrdedA2P15K216xNj/9uLbND4fT8S0rroKLYN9Xm7Ogc428="
-
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://mariadb:3306/test
+    username: root
+    password: test1234  
 token:
   expiration_time: 86400000
   secret: my_token_default
